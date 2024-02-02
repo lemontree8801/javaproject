@@ -1,0 +1,22 @@
+config file:
+!!com.alibaba.otter.node.etl.load.loader.hdb.properties.RocketMQProperties
+hdbType: RMQ
+nameServer: 
+producerGroup: PG-mysql_user_tag
+token: 
+mqFormat: CANAL_EVENT # or COMPACT/FLAT
+destination:
+  topic: qiyihao_user_tag
+  partitionKey: # Map<schemaName, Map<tableName, List<partitionKeys>>>
+    qiyihao_tag:
+      user_tag_info: [uid]
+
+
+
+error log:
+can't match column in eventData by partitionKey, please check partitionKey config!eventData is EventData[tableId=6591,tableName=user_tag_info,schemaName=q_tag,logicSchemaName=<null>,eventType=UPDATE,redisEventType=<null>,executeTime=1706670192000,oldKeys=[],keys=[EventColumn[index=0,columnType=-5,columnName=uid,columnValue=1379042803,columnValueBytes=<null>,columnValueBefore=<null>,isNull=false,valueBeforeIsNull=false,isKey=true,isUpdate=true]],
+columns=[
+EventColumn[index=1,columnType=12,columnName=tags,columnValue=故事化,IP化,columnValueBytes=<null>,columnValueBefore=无,isNull=false,valueBeforeIsNull=false,isKey=false,isUpdate=true], 
+EventColumn[index=2,columnType=93,columnName=update_time,columnValue=2024-01-31 11:03:13,columnValueBytes=<null>,columnValueBefore=2024-01-26 13:56:57,isNull=false,valueBeforeIsNull=false,isKey=false,isUpdate=true], 
+EventColumn[index=3,columnType=93,columnName=create_time,columnValue=2022-08-24 20:14:52,columnValueBytes=<null>,columnValueBefore=2022-08-24 20:14:52,isNull=false,valueBeforeIsNull=false,isKey=false,isUpdate=true]],
+size=96,pairId=10360,sql=<null>,ddlSchemaName=<null>,syncMode=<null>,syncConsistency=<null>,remedy=false,hint=<null>,withoutSchema=false,usingShard=false,sourcingType=MYSQL,props=<null>], partitionValue is []load to heterogeneous DB/MQ failed, will retry 2 times, error: {}com.alibaba.otter.node.etl.load.exception.LoadException: error occur while generating partitionKeyValue
