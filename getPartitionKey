@@ -1,0 +1,27 @@
+private String getPartitionKey(EventData eventData) {
+        List<String> partitionValues = new ArrayList<>();
+        try {
+            if(!CollectionUtils.isEmpty(getRocketMQProperties().getDestination().getPartitionKey())) {
+                List<String> partitionKeys = getRocketMQProperties().getDestination().getPartitionKey().get(eventData.getSchemaName()).get(eventData.getTableName());
+                eventData.getKeys().forEach(col -> {
+                    if (partitionKeys.contains(col.getColumnName())) {
+                        partitionValues.add(col.getColumnValue());
+                    }
+                });
+                eventData.getColumns().forEach(col -> {
+                    if (partitionKeys.contains(col.getColumnName())) {
+                        partitionValues.add(col.getColumnValue());
+                    }
+                });
+            }else {
+                eventData.getKeys().forEach(col -> partitionValues.add(col.getColumnValue()));
+            }
+            return StringUtils.join(partitionValues, getRocketMQProperties().getDestination().getJoiner());
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (e instanceof NullPointerException) {
+                logger.error("can't match column in eventData by partitionKey, please check partitionKey config!eventData is {}, partitionValue is {}", eventData, partitionValues);
+            }
+            throw new LoadException("error occur while generating partitionKeyValue", e);
+        }
+    }
